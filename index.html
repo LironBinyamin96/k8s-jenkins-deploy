@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liron's Futuristic NGINX Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(ellipse at center, #0f0f0f 0%, #050505 100%);
+      color: #00ffe7;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: pulse-bg 10s infinite alternate;
+    }
+
+    @keyframes pulse-bg {
+      0% { background-color: #050505; }
+      100% { background-color: #0a0a0a; }
+    }
+
+    .container {
+      text-align: center;
+      padding: 3rem;
+      border: 2px solid #00ffe7;
+      border-radius: 20px;
+      box-shadow: 0 0 40px #00ffe7aa;
+      background-color: rgba(0, 0, 0, 0.6);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 0 0 10px #00ffe7, 0 0 20px #00ffe7;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 1.5rem 0;
+      color: #ccfaff;
+    }
+
+    .btn {
+      padding: 0.8rem 2rem;
+      background: transparent;
+      border: 2px solid #00ffe7;
+      color: #00ffe7;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 10px #00ffe799;
+    }
+
+    .btn:hover {
+      background-color: #00ffe7;
+      color: black;
+      box-shadow: 0 0 20px #00ffe7cc;
+    }
+
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #00ffe7;
+      opacity: 0.2;
+      animation: scan 3s infinite linear;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scanline"></div>
+  <div class="container">
+    <h1>Welcome to Liron's NGINX Portal</h1>
+    <p>System online. Managed by Liron Binyamin. Awaiting command...</p>
+    <a href="#" class="btn">Launch Interface</a>
+  </div>
+</body>
+</html>
