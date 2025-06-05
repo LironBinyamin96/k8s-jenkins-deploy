@@ -3,97 +3,174 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Liron's Futuristic NGINX Portal</title>
+  <title>Liron's Matrix Console</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
-    body {
+    html, body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(ellipse at center, #0f0f0f 0%, #050505 100%);
-      color: #00ffe7;
+      padding: 0;
+      background: black;
       overflow: hidden;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      animation: pulse-bg 10s infinite alternate;
+      font-family: 'Courier New', monospace;
+      color: #00ff00;
     }
 
-    @keyframes pulse-bg {
-      0% { background-color: #050505; }
-      100% { background-color: #0a0a0a; }
-    }
-
-    .container {
-      text-align: center;
-      padding: 3rem;
-      border: 2px solid #00ffe7;
-      border-radius: 20px;
-      box-shadow: 0 0 40px #00ffe7aa;
-      background-color: rgba(0, 0, 0, 0.6);
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      text-shadow: 0 0 10px #00ffe7, 0 0 20px #00ffe7;
-    }
-
-    p {
-      font-size: 1.2rem;
-      margin: 1.5rem 0;
-      color: #ccfaff;
-    }
-
-    .btn {
-      padding: 0.8rem 2rem;
-      background: transparent;
-      border: 2px solid #00ffe7;
-      color: #00ffe7;
-      font-weight: bold;
-      font-size: 1rem;
-      border-radius: 40px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease-in-out;
-      box-shadow: 0 0 10px #00ffe799;
-    }
-
-    .btn:hover {
-      background-color: #00ffe7;
-      color: black;
-      box-shadow: 0 0 20px #00ffe7cc;
-    }
-
-    .scanline {
+    canvas {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 2px;
-      background: #00ffe7;
-      opacity: 0.2;
-      animation: scan 3s infinite linear;
     }
 
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
+    #console {
+      display: none;
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.9);
+      border: 2px solid #00ff00;
+      max-width: 800px;
+      margin: 100px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ff00aa;
+    }
+
+    .line, .output {
+      margin-bottom: 10px;
+    }
+
+    .prompt {
+      color: #00ff00;
+    }
+
+    .input-line {
+      display: flex;
+    }
+
+    #input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #00ff00;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
     }
   </style>
 </head>
 <body>
-  <div class="scanline"></div>
-  <div class="container">
-    <h1>Welcome to Liron's NGINX Portal</h1>
-    <p>System online. Managed by Liron Binyamin. Awaiting command...</p>
-    <a href="#" class="btn">Launch Interface</a>
+  <canvas id="matrix"></canvas>
+  <div id="console">
+    <div class="line">Liron's Admin Console initialized...</div>
+    <div class="line">Type 'help' to list available commands.</div>
   </div>
+
+  <script>
+    // MATRIX ANIMATION
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    const interval = setInterval(drawMatrix, 33);
+
+    // AFTER DELAY, STOP MATRIX & SHOW CONSOLE
+    setTimeout(() => {
+      clearInterval(interval);
+      canvas.style.display = "none";
+      document.getElementById("console").style.display = "block";
+      createInput();
+    }, 4000);
+
+    // CONSOLE FUNCTIONALITY
+    const consoleDiv = document.getElementById("console");
+    const commands = {
+      help: [
+        "Available commands:",
+        "- status",
+        "- reboot",
+        "- connect",
+        "- selfdestruct",
+        "- clear"
+      ],
+      status: "Systems nominal. Power at 97%. Awaiting directives.",
+      reboot: "Reboot initialized. Sequence complete.",
+      connect: "Connection established to Liron’s NGINX interface.",
+      selfdestruct: "🚨 ERROR: You are not authorized to destroy the mothership.",
+      clear: "clear"
+    };
+
+    function addLine(text, className = "line") {
+      const div = document.createElement("div");
+      div.className = className;
+      div.textContent = text;
+      consoleDiv.appendChild(div);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    function createInput() {
+      const line = document.createElement("div");
+      line.className = "input-line";
+
+      const prompt = document.createElement("span");
+      prompt.className = "prompt";
+      prompt.textContent = "liron@matrix:~$ ";
+
+      const input = document.createElement("input");
+      input.id = "input";
+      input.autofocus = true;
+
+      line.appendChild(prompt);
+      line.appendChild(input);
+      consoleDiv.appendChild(line);
+
+      input.focus();
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          const command = input.value.trim().toLowerCase();
+          line.remove();
+
+          addLine(`liron@matrix:~$ ${command}`, "line");
+
+          if (commands.hasOwnProperty(command)) {
+            const output = commands[command];
+            if (output === "clear") {
+              consoleDiv.innerHTML = "";
+            } else if (Array.isArray(output)) {
+              output.forEach(o => addLine(o, "output"));
+            } else {
+              addLine(output, "output");
+            }
+          } else {
+            addLine("Command not recognized. Type 'help'.", "output");
+          }
+
+          createInput();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
