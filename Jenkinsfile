@@ -35,11 +35,14 @@ pipeline {
                 }
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Authenticate to AWS ECR') {
             steps {
                 script {
-                    def dockerImage = docker.build("${IMAGE_NAME}:${env.IMAGE_TAG}")
+                    sh '''
+                    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+                    ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                    aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
+                    '''
                 }
             }
         }
