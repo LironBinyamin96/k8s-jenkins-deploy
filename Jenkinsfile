@@ -78,7 +78,7 @@ pipeline {
 
         stage('Configure Kubeconfig') {
             steps {
-                withEnv(["KUBECONFIG=/tmp/eks.conf"]) {
+                withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     echo "✅ KUBECONFIG set to $KUBECONFIG"
                 }
             }
@@ -86,7 +86,7 @@ pipeline {
 
         stage('Create Namespace') {
             steps {
-                withEnv(["KUBECONFIG=/tmp/eks.conf"]) {
+                withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     sh '''
                         kubectl get namespace nginx-deployment || \
                           kubectl create namespace  nginx-deployment
@@ -114,7 +114,7 @@ pipeline {
 
         stage('Deploy with Helm') {
             steps {
-                withEnv(["KUBECONFIG=/tmp/eks.conf"]) {
+                withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     sh '''
                       helm upgrade --install nginx-deployment ./nginx \
                         --namespace  nginx-deployment
