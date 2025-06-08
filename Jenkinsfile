@@ -104,10 +104,10 @@ pipeline {
 
                     // update values.yaml under nginx-deployment folder
                     sh """
-                      sed -i 's|^\\s*repository:.*|  repository: ${registryRepo}|' nginx-deployment/values.yaml
-                      sed -i 's|^\\s*tag:.*|  tag:        ${env.IMAGE_TAG}|'    nginx-deployment/values.yaml
+                      sed -i 's|^\\s*repository:.*|  repository: ${registryRepo}|' nginx-helm/values.yaml
+                      sed -i 's|^\\s*tag:.*|  tag:        ${env.IMAGE_TAG}|'    nginx-helm/values.yaml
                     """
-                    echo "🔄 nginx-deployment/values.yaml updated → ${registryRepo}:${env.IMAGE_TAG}"
+                    echo "🔄 nginx-helm/values.yaml updated → ${registryRepo}:${env.IMAGE_TAG}"
                 }
             }
         }
