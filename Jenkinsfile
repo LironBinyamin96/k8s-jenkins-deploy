@@ -116,7 +116,7 @@ pipeline {
             steps {
                 withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     sh '''
-                      helm upgrade --install nginx-deployment ./nginx \
+                      helm upgrade --install nginx-deployment ./nginx-helm \
                         --namespace  nginx-deployment
                     '''
                     echo "🚀 Helm release 'nginx-deployment' deployed/upgraded in ' nginx-deployment'"
