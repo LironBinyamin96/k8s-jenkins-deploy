@@ -40,25 +40,12 @@ pipeline {
             steps {
                 script {
                     sh '''
+                    # משתמש ב-EC2 Instance Role לצורך החיבור, אין צורך במפתחות גישה
                     AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
                     ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
                     '''
                 }
-            }
-        }
-
-        stage('Login to ECR') {
-            steps {
-                sh '''
-                    aws configure set aws_access_key_id     $AWS_ACCESS_KEY_ID
-                    aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                    aws configure set default.region        $AWS_REGION
-
-                    aws ecr get-login-password --region $AWS_REGION \
-                      | docker login --username AWS --password-stdin \
-                        $(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_REGION.amazonaws.com
-                '''
             }
         }
 
