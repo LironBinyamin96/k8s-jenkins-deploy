@@ -36,6 +36,14 @@ pipeline {
             }
         }
 
+         stage('Build Docker Image') {
+            steps {
+                script {
+                    def dockerImage = docker.build("${IMAGE_NAME}:${env.IMAGE_TAG}")
+                }
+            }
+        }
+
         stage('Authenticate to AWS ECR') {
             steps {
                 script {
