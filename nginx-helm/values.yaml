@@ -30,16 +30,16 @@ livenessProbe:
     port: 80
   initialDelaySeconds: 15
   periodSeconds: 20
-#volumeMounts: 
-# - name: liron-secret-volume
-#   mountPath: "/etc/secret"
-#   readOnly: true 
-# - name: pvc-volume
-#   mountPath: "/mnt/data"
-#volumes: 
-# - name: liron-secret-volume
-#   secret:
-#    secretName: nginx-secret
-# - name: pvc-volume
-#   persistentVolumeClaim:
-#   claimName: liron-pvc
+volumeMounts: 
+ - name: liron-secret-volume
+   mountPath: "/etc/secret"
+   readOnly: true 
+ - name: pvc-volume
+   mountPath: "/mnt/data"
+volumes: 
+ - name: liron-secret-volume
+   secret:
+    secretName: nginx-secret
+ - name: pvc-volume
+   persistentVolumeClaim:
+   claimName: liron-pvc
