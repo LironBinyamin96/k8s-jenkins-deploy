@@ -9,5 +9,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: gp2
   # Optional: specify your storage class, or omit for default
   # storageClassName: standard
