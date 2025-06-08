@@ -88,10 +88,10 @@ pipeline {
             steps {
                 withEnv(["KUBECONFIG=/tmp/eks.conf"]) {
                     sh '''
-                        kubectl get namespace nginx-dep || \
-                          kubectl create namespace nginx-dep
+                        kubectl get namespace nginx-deployment || \
+                          kubectl create namespace  nginx-deployment
                     '''
-                    echo "📂 Namespace 'nginx-dep' ensured"
+                    echo "📂 Namespace ' nginx-deployment' ensured"
                 }
             }
         }
@@ -116,10 +116,10 @@ pipeline {
             steps {
                 withEnv(["KUBECONFIG=/tmp/eks.conf"]) {
                     sh '''
-                      helm upgrade --install nginx-deployment ./nginx-deployment \
-                        --namespace nginx-dep
+                      helm upgrade --install nginx-deployment ./nginx \
+                        --namespace  nginx-deployment
                     '''
-                    echo "🚀 Helm release 'nginx-deployment' deployed/upgraded in 'nginx-dep'"
+                    echo "🚀 Helm release 'nginx-deployment' deployed/upgraded in ' nginx-deployment'"
                 }
             }
         }
