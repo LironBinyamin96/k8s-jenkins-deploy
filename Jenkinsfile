@@ -49,9 +49,10 @@ pipeline {
                 script {
                     sh '''
                     # משתמש ב-EC2 Instance Role לצורך החיבור, אין צורך במפתחות גישה
-                    aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
 		    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
                     ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+		    aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
+
                     '''
                 }
             }
@@ -66,10 +67,11 @@ pipeline {
                     ).trim()
                     def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
 
-                    sh """
+                    sh '''
+		        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
                         docker push ${ecrUri}:${IMAGE_TAG}
-                    """
+                    '''
                     env.ECR_IMAGE_URI = "${ecrUri}:${IMAGE_TAG}"
                     echo "📦 Pushed ${IMAGE_NAME}:${IMAGE_TAG} → ${env.ECR_IMAGE_URI}"
                 }
