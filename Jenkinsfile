@@ -68,7 +68,7 @@ pipeline {
                     def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
 
                     sh '''
-		        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+		        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ecrUri
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
                         docker push ${ecrUri}:${IMAGE_TAG}
                     '''
