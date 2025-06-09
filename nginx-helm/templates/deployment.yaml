@@ -58,9 +58,9 @@ spec:
           secret:
             secretName: {{ .secret.secretName }}
           {{- end }}
-          {{- if .persistentVolumeClaim }}
-          persistentVolumeClaim:
-            claimName: {{ .persistentVolumeClaim.claimName }}
-          {{- end }}
+         # {{- if .persistentVolumeClaim }}
+         # persistentVolumeClaim:
+         #   claimName: {{ .persistentVolumeClaim.claimName }}
+         # {{- end }}
       {{- end }}
 
