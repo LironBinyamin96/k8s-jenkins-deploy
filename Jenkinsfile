@@ -51,7 +51,7 @@ pipeline {
                     # משתמש ב-EC2 Instance Role לצורך החיבור, אין צורך במפתחות גישה
                     AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
                     ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+                    aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
                     '''
                 }
             }
@@ -67,9 +67,9 @@ pipeline {
                     def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
 
                     sh '''
-                    # שימוש ב-ECR URI הנכון להתחברות
-                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
-                    docker push ${ecrUri}:${IMAGE_TAG}
+                        # ודא שה-URI כולל את ה-repository המלא
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
+                        docker push ${ecrUri}:${IMAGE_TAG}
                     '''
                     env.ECR_IMAGE_URI = "${ecrUri}:${IMAGE_TAG}"
                     echo "📦 Pushed ${IMAGE_NAME}:${IMAGE_TAG} → ${env.ECR_IMAGE_URI}"
@@ -90,9 +90,9 @@ pipeline {
                 withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     sh '''
                         kubectl get namespace nginx-deployment || \
-                          kubectl create namespace  nginx-deployment
+                          kubectl create namespace nginx-deployment
                     '''
-                    echo "📂 Namespace ' nginx-deployment' ensured"
+                    echo "📂 Namespace 'nginx-deployment' ensured"
                 }
             }
         }
@@ -118,9 +118,9 @@ pipeline {
                 withEnv(["KUBECONFIG=/etc/eks/EKS.conf"]) {
                     sh '''
                       helm upgrade --install nginx-deployment ./nginx-helm \
-                        --namespace  nginx-deployment
+                        --namespace nginx-deployment
                     '''
-                    echo "🚀 Helm release 'nginx-deployment' deployed/upgraded in ' nginx-deployment'"
+                    echo "🚀 Helm release 'nginx-deployment' deployed/upgraded in 'nginx-deployment'"
                 }
             }
         }
