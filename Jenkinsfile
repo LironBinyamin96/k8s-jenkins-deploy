@@ -65,7 +65,7 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
-
+        
                     sh '''
                         # ודא שה-URI כולל את ה-repository המלא
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
