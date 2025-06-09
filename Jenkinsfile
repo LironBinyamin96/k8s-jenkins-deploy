@@ -36,7 +36,7 @@ pipeline {
             }
         }
 
-         stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     def dockerImage = docker.build("${IMAGE_NAME}:${env.IMAGE_TAG}")
@@ -49,10 +49,9 @@ pipeline {
                 script {
                     sh '''
                     # משתמש ב-EC2 Instance Role לצורך החיבור, אין צורך במפתחות גישה
-		    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+                    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
                     ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-		    aws ecr get-login-password --region $AWS_REGION | helm registry login --username AWS --password-stdin $ECR_REGISTRY
-
+                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
                     '''
                 }
             }
@@ -67,11 +66,11 @@ pipeline {
                     ).trim()
                     def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
 
-	            sh '''
-	                aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ecrUri
-	                docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
-	                docker push ${ecrUri}:${IMAGE_TAG}
-	            '''
+                    sh '''
+                    # שימוש ב-ECR URI הנכון להתחברות
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ecrUri}:${IMAGE_TAG}
+                    docker push ${ecrUri}:${IMAGE_TAG}
+                    '''
                     env.ECR_IMAGE_URI = "${ecrUri}:${IMAGE_TAG}"
                     echo "📦 Pushed ${IMAGE_NAME}:${IMAGE_TAG} → ${env.ECR_IMAGE_URI}"
                 }
