@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ecr-liron
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 314525640319.dkr.ecr.il-central-1.amazonaws.com
+    chart: liron/helm/nginx
+    targetRevision: 0.1.0
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nginx-deployment
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
